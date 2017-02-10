@@ -1,29 +1,33 @@
-var fs = require('fs');
+var fs = require( 'fs' );
+var Q = require( 'q' );
 
 var Database = function () {
-    this.sounds = [];
-    this.fetchSounds();
+
 };
 
 Database.prototype = {
 
-    fetchSounds: function () {
-        fs.readdir( __dirname +'/../../audio', function (err, files) {
-          files.forEach( function (file) {
-            if ( ! /^\./.test(file) ) {
-                this.sounds.push( file );
+    getSounds: function () {
+
+        var deferred = Q.defer();
+
+        fs.readdir( __dirname + '/../../audio', function ( err, files ) {
+
+            var sounds = [];
+
+            if ( err ) {
+                deferred.reject();
+            } else {
+                files.forEach( function ( file ) {
+                    if ( !/^\./.test( file ) ) {
+                        sounds.push( file );
+                    }
+                } );
+                deferred.resolve( sounds );
             }
+        } );
 
-          }.bind( this ));
-        }.bind( this ))
-    },
-
-    getAudio: function () {
-        return this.sounds;
-    },
-
-    save: function ( fileName ) {
-        this.sounds.push( fileName );
+        return deferred.promise;
     }
 };
 

@@ -8,16 +8,33 @@ var board = new five.Board();
 
 board.on("ready", function() {
 
+    var ledChoice = [
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+        0, 1, 2,
+    ];
+
     var leds = [
-        new five.Led( 10 ),
-        new five.Led( 11 ),
-        new five.Led( 12 ),
-        new five.Led( 13 ),
-        new five.Led( 10 ),
-        new five.Led( 11 ),
-        new five.Led( 12 ),
-        new five.Led( 13 ),
-        new five.Led( 10 ),
         new five.Led( 11 ),
         new five.Led( 12 ),
         new five.Led( 13 )
@@ -27,13 +44,15 @@ board.on("ready", function() {
 
         if ( httpRequest.params.nr ) {
 
-            httpResponse.send( 'We gaan ledje '+ httpRequest.params.nr +' aanzetten' );
+            var ledje = ledChoice[ parseFloat( httpRequest.params.nr ) ];
+
+            httpResponse.send( 'We gaan ledje '+ ledje +' aanzetten' );
 
             leds.forEach(function ( led) {
                led.off();
             });
 
-            leds[ parseFloat( httpRequest.params.nr ) ].on();
+            leds[ ledje ].on();
 
         } else {
             httpResponse.status( 400 );

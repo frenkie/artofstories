@@ -4,7 +4,6 @@ var express = require('express');
 var fs = require('fs');
 var Q = require('q');
 var router = express.Router();
-var database = require('../lib/Database');
 
 function saveAudio ( audioData ) {
 
@@ -17,9 +16,6 @@ function saveAudio ( audioData ) {
         if ( err ) {
             deferred.reject();
         } else {
-
-            database.save( name );
-
             deferred.resolve();
         }
     });

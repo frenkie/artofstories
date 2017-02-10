@@ -5,8 +5,17 @@ var router = express.Router();
 
 router.get( '/audio', function ( httpRequest, httpResponse ) {
 
-    httpResponse.type('json').send({
-        audio: database.getAudio()
+    database.getSounds().then( function ( sounds ) {
+
+        httpResponse.type('json').send({
+            audio: sounds
+        });
+
+    }, function () {
+        debug('hmm, audio fetching fail, just return an empty list');
+        httpResponse.type('json').send({
+            audio: []
+        });
     });
 });
 

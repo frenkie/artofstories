@@ -1,4 +1,4 @@
-# Art of stories
+# Brain Dump (fka The Art of Stories)
 
 
 ## install

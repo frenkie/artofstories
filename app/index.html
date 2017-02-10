@@ -22,17 +22,31 @@
 
             var isRecording;
             var audioIndex = 0;
-
+            var recordRTC;
             var recordings = [];
 
             var audio = document.createElement('audio');
             audio.controls = 'controls';
             document.body.appendChild( audio );
+
             audio.addEventListener('ended', function () {
                 startRandomizing();
             });
 
-            var recordRTC;
+            function startRandomizing () {
+
+                if ( ! isRecording ) {
+                    audio.currentTime = 0;
+                    audio.src = '/audio/' + recordings[ audioIndex ];
+                    audio.play();
+                    $.get( '/leds/' + audioIndex );
+
+                    audioIndex = audioIndex + 1;
+                    if ( audioIndex >= recordings.length ) {
+                        audioIndex = 0;
+                    }
+                }
+            }
 
             function startRecording () {
 
@@ -49,7 +63,7 @@
                             $('.log').html('recording...');
 
                             recordRTC = RecordRTC(stream, {
-                                type: 'audio' // audio or video or gif or canvas
+                                type: 'audio'
                             });
                             recordRTC.startRecording();
                         }
@@ -121,20 +135,7 @@
                 }
             });
 
-            function startRandomizing () {
 
-                if ( ! isRecording ) {
-                    audio.src = '/audio/' + recordings[ audioIndex ];
-                    audio.currentTime = 0;
-                    audio.play();
-                    $.get( '/leds/' + audioIndex );
-
-                    audioIndex = audioIndex + 1;
-                    if ( audioIndex >= recordings.length ) {
-                        audioIndex = 0;
-                    }
-                }
-            }
 
             document.addEventListener('keyup', function ( e ) {
                 switch ( e.keyCode ) {
