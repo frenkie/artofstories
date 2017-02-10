@@ -3,15 +3,15 @@ var express = require('express');
 var debug = require('debug')('artof-leds');
 var router = express.Router();
 
-router.get( '/leds/:nr', function ( req, res ) {
+router.get( '/leds/:nr', function ( httpRequest, httpResponse ) {
 
-    if ( req.params.nr ) {
+    if ( httpRequest.params.nr ) {
 
-        res.send( 'We gaan ledje '+ req.params.nr +' aanzetten' );
+        httpResponse.send( 'We gaan ledje '+ httpRequest.params.nr +' aanzetten' );
 
     } else {
-        res.status( 400 );
-        res.send( 'Bad request' );
+        httpResponse.status( 400 );
+        httpResponse.send( 'Bad request' );
     }
 });
 
