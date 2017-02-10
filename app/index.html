@@ -3,19 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <title>The Art of Stories</title>
+    <style>
+    </style>
 </head>
 <body>
 
     <h1>Audio recording</h1>
-    <button class="start">Start recording</button>
 
-    <button class="stop">Stop recording</button>
+    <button class="start">start</button>
+    <button class="stop">stop</button>
+    <div class="log"></div>
 
+    <script src="//cdn.webrtc-experiment.com/RecordRTC.js"></script>
     <script src="vendor/jquery/dist/jquery.min.js"></script>
+
     <script>
         $(function () {
 
+            var isRecording;
+            var audioIndex = 0;
 
+            var recordings = [];
+
+            var audio = document.createElement('audio');
+            audio.controls = 'controls';
+            document.body.appendChild( audio );
+            audio.addEventListener('end', function () {
+                startRandomizing();
+            });
+
+            var recordRTC;
+
+            $('.start').on('click', function () {
+
+                navigator.mediaDevices.getUserMedia({
+                    audio: true
+                }).then(
+                    function(stream) {
+
+                        $('.log').html('recording...');
+
+                        isRecording = true;
+
+                        recordRTC = RecordRTC(stream, {
+                            type: 'audio' // audio or video or gif or canvas
+                        });
+                        recordRTC.startRecording();
+                    }
+                );
+
+            });
+
+            $('.stop').on('click', function () {
+
+                if ( recordRTC ) {
+                    recordRTC.stopRecording(function() {
+
+                        recordRTC.getDataURL(function ( dataUrl ) {
+                            audio.src = dataUrl;
+                            console.log('we gaan savn');
+
+                            var request = new XMLHttpRequest();
+                            request.open('POST', '/save', true);
+                            request.setRequestHeader('Content-Type', 'text/plain; charset=UTF-8');
+
+                            request.onload = function () {
+
+                                $('.log').html('recorded!');
+
+                                $.ajax({
+                                    url: '/audio',
+                                    dataType: 'json'
+                                }).then(function ( data ) {
+
+                                    console.log('ophalen van audio na opslaan');
+                                    recordings = data.audio;
+                                    audioIndex = recordings.length - 1;
+
+                                    startRandomizing();
+
+                                });
+
+                            }.bind( this );
+
+                            request.onerror = function () {
+
+                                alert('Error!');
+
+                            }.bind( this );
+
+                            request.send( dataUrl );
+
+                        });
+                    });
+                }
+            });
+
+            $.ajax({
+                url: '/audio',
+                dataType: 'json'
+            }).then(function ( data ) {
+
+                console.log('first ophalen van audio');
+
+                recordings = data.audio;
+
+                if ( recordings.length ) {
+                    startRandomizing();
+                }
+            });
+
+            function startRandomizing () {
+
+                audio.src = '/audio/'+ recordings[ audioIndex ];
+                audio.currentTime = 0;
+                audio.play();
+                $.get('/leds/'+ audioIndex );
+
+                audioIndex = audioIndex+1;
+                if ( audioIndex >= recordings.length ) {
+                    audioIndex = 0;
+                }
+            }
         });
     </script>
 </body>

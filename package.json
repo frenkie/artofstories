@@ -6,6 +6,7 @@
     "express": "~4.14.1",
     "jquery": "~3.1.1",
     "q": "~1.4.1",
+    "record-audio": "~1.0.0",
     "recordrtc-nodejs": "~1.0.1"
   },
   "scripts": {
