@@ -1,10 +1,18 @@
-var debug = require('debug')('artofstories-server');
-var express = require('express'); // Docs http://expressjs.com/
+var express = require('express');
 
-var app = express();
-var server = require('http').Server( app );
+var debug = require('debug')('artof-leds');
+var router = express.Router();
 
-// binding to 0.0.0.0 allows connections from any other computer in the network
-// to your ip address
-var ipAddress = process.env.IP || '0.0.0.0';
-var port = process.env.PORT || 9020;
+router.get( '/leds/:nr', function ( req, res ) {
+
+    if ( req.params.nr ) {
+
+        res.send( 'We gaan ledje '+ req.params.nr +' aanzetten' );
+
+    } else {
+        res.status( 400 );
+        res.send( 'Bad request' );
+    }
+});
+
+module.exports = router;

@@ -7,6 +7,6 @@
     "q": "~1.4.1"
   },
   "scripts": {
-    "start": "DEBUG=* node server/server.js"
+    "start": "DEBUG=artof-* node server/server.js"
   }
 }
