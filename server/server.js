@@ -1,11 +1,3 @@
-/*
-
- -  Pagina met WebRTC audio opnemen
- -  Server route om op te slaan
- -  lokale DB
- -
-*/
-
 var debug = require('debug')('artof-server');
 var express = require('express'); // Docs http://expressjs.com/
 
@@ -18,7 +10,6 @@ var ipAddress = process.env.IP || '0.0.0.0';
 var port = process.env.PORT || 9090;
 
 server.listen( port, ipAddress, function () {
-
 
     app.use( require('./routes/static') );
     app.use( require('./routes/leds') );
