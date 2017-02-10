@@ -24,7 +24,7 @@ server.listen( port, ipAddress, function () {
     app.use( require('./routes/static') );
     app.use( require('./routes/audio') );
     app.use( require('./routes/save') );
-    // app.use( require('./routes/leds') );
+    app.use( require('./routes/leds') );
 
     debug( 'started on localhost:' + port );
 } );

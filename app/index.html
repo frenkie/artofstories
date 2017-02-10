@@ -28,14 +28,14 @@
             var audio = document.createElement('audio');
             audio.controls = 'controls';
             document.body.appendChild( audio );
-            audio.addEventListener('end', function () {
+            audio.addEventListener('ended', function () {
                 startRandomizing();
             });
 
             var recordRTC;
 
             $('.start').on('click', function () {
-
+                audio.pause();
                 navigator.mediaDevices.getUserMedia({
                     audio: true
                 }).then(
@@ -80,6 +80,7 @@
                                     recordings = data.audio;
                                     audioIndex = recordings.length - 1;
 
+                                    isRecording = false;
                                     startRandomizing();
 
                                 });
@@ -115,14 +116,16 @@
 
             function startRandomizing () {
 
-                audio.src = '/audio/'+ recordings[ audioIndex ];
-                audio.currentTime = 0;
-                audio.play();
-                $.get('/leds/'+ audioIndex );
+                if ( ! isRecording ) {
+                    audio.src = '/audio/' + recordings[ audioIndex ];
+                    audio.currentTime = 0;
+                    audio.play();
+                    $.get( '/leds/' + audioIndex );
 
-                audioIndex = audioIndex+1;
-                if ( audioIndex >= recordings.length ) {
-                    audioIndex = 0;
+                    audioIndex = audioIndex + 1;
+                    if ( audioIndex >= recordings.length ) {
+                        audioIndex = 0;
+                    }
                 }
             }
         });

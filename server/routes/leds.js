@@ -6,19 +6,42 @@ var router = express.Router();
 var five = require("johnny-five");
 var board = new five.Board();
 
-router.get( '/leds/:nr', function ( httpRequest, httpResponse ) {
+board.on("ready", function() {
 
-    if ( httpRequest.params.nr ) {
+    var leds = [
+        new five.Led( 10 ),
+        new five.Led( 11 ),
+        new five.Led( 12 ),
+        new five.Led( 13 ),
+        new five.Led( 10 ),
+        new five.Led( 11 ),
+        new five.Led( 12 ),
+        new five.Led( 13 ),
+        new five.Led( 10 ),
+        new five.Led( 11 ),
+        new five.Led( 12 ),
+        new five.Led( 13 )
+    ];
 
-        httpResponse.send( 'We gaan ledje '+ httpRequest.params.nr +' aanzetten' );
-		
-		myLed = new five.Led(httpRequest.params.nr);
-		myLed.off();		
+    router.get( '/leds/:nr', function ( httpRequest, httpResponse ) {
 
-    } else {
-        httpResponse.status( 400 );
-        httpResponse.send( 'Bad request' );
-    }
+        if ( httpRequest.params.nr ) {
+
+            httpResponse.send( 'We gaan ledje '+ httpRequest.params.nr +' aanzetten' );
+
+            leds.forEach(function ( led) {
+               led.off();
+            });
+
+            leds[ parseFloat( httpRequest.params.nr ) ].on();
+
+        } else {
+            httpResponse.status( 400 );
+            httpResponse.send( 'Bad request' );
+        }
+    });
+
 });
+
 
 module.exports = router;

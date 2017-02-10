@@ -10,8 +10,9 @@ Database.prototype = {
     fetchSounds: function () {
         fs.readdir( __dirname +'/../../audio', function (err, files) {
           files.forEach( function (file) {
-
-              this.sounds.push( file );
+            if ( ! /^\./.test(file) ) {
+                this.sounds.push( file );
+            }
 
           }.bind( this ));
         }.bind( this ))
