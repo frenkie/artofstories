@@ -34,29 +34,32 @@
 
             var recordRTC;
 
-            $('.start').on('click', function () {
-                audio.pause();
-                navigator.mediaDevices.getUserMedia({
-                    audio: true
-                }).then(
-                    function(stream) {
+            function startRecording () {
 
-                        $('.log').html('recording...');
+                if ( ! isRecording ) {
 
-                        isRecording = true;
+                    isRecording = true;
 
-                        recordRTC = RecordRTC(stream, {
-                            type: 'audio' // audio or video or gif or canvas
-                        });
-                        recordRTC.startRecording();
-                    }
-                );
+                    audio.pause();
+                    navigator.mediaDevices.getUserMedia({
+                        audio: true
+                    }).then(
+                        function(stream) {
 
-            });
+                            $('.log').html('recording...');
 
-            $('.stop').on('click', function () {
+                            recordRTC = RecordRTC(stream, {
+                                type: 'audio' // audio or video or gif or canvas
+                            });
+                            recordRTC.startRecording();
+                        }
+                    );
+                }
+            }
 
-                if ( recordRTC ) {
+            function stopRecording () {
+
+                if ( recordRTC && isRecording ) {
                     recordRTC.stopRecording(function() {
 
                         recordRTC.getDataURL(function ( dataUrl ) {
@@ -72,7 +75,7 @@
                                 $('.log').html('recorded!');
 
                                 $.ajax({
-                                    url: '/audio',
+                                    url: '/audio/?cache='+ Date.now(),
                                     dataType: 'json'
                                 }).then(function ( data ) {
 
@@ -98,10 +101,14 @@
                         });
                     });
                 }
-            });
+            }
+
+            $('.start').on('click', startRecording );
+
+            $('.stop').on('click', stopRecording );
 
             $.ajax({
-                url: '/audio',
+                url: '/audio/?cache='+ Date.now(),
                 dataType: 'json'
             }).then(function ( data ) {
 
@@ -128,6 +135,18 @@
                     }
                 }
             }
+
+            document.addEventListener('keyup', function ( e ) {
+                switch ( e.keyCode ) {
+                    case 82: //r
+                        startRecording();
+                        break;
+
+                    case 83: //s
+                        stopRecording();
+                        break;
+                }
+            });
         });
     </script>
 </body>
