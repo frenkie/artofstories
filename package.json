@@ -5,7 +5,8 @@
     "debug": "~2.6.0",
     "express": "~4.14.1",
     "jquery": "~3.1.1",
-    "q": "~1.4.1"
+    "q": "~1.4.1",
+    "recordrtc-nodejs": "~1.0.1"
   },
   "scripts": {
     "start": "DEBUG=artof-* node server/server.js"
